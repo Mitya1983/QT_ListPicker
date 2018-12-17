@@ -5,8 +5,8 @@
 #include <QVector>
 #include <QList>
 #include <QFont>
-
-#include <memory>
+//Reimplement maxDays on base of not to change the vector sizes but to limit the circle or shown rows.
+//That is vector is always created with 31 days but shown days are limited.
 
 enum class ListTypes
 {
@@ -39,7 +39,7 @@ private:
     //Items storage
     QVector<QString> listOfStrings; //Stores items
     void createCustomNumberList(const int &_numbers); //creates custom number list
-    void createCustomStringList(const QVector<QString> &_vector); //Moves
+    void createCustomStringList(const QVector<QString> &_vector);
     void createCustomStringList(const QList<QString> &_list);
     //Maximum number of elements in list
     int maxShownItems;
