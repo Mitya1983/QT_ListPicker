@@ -7,7 +7,8 @@
 #include <QList>
 #include <QFont>
 #include <QVBoxLayout>
-
+//Implement list fillment
+//Implement setSownValues function
 //Reimplement maxDays on base of not to change the vector sizes but to limit the circle or shown rows.
 //That is vector is always created with 31 days but shown days are limited.
 
@@ -26,7 +27,7 @@ public:
                QWidget *parent = nullptr,
                const int &numberOfRowsShown = 5);
 
-    void createList(const int &numberOfListElements, const int &startValue); //Creates custom number list starting from startValue
+    void createNumberList(const int &numberOfListElements, int startValue); //Creates custom number list starting from startValue
     void createList(std::initializer_list<QString> list);
     void createStringList(const QVector<QString> &_vector); //Creates custom string list from existing vector
     void createStringList(const QList<QString> &_list); //Creates custom string list from existing list

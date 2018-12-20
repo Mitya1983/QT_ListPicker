@@ -10,6 +10,7 @@ ListPicker::ListPicker(QWidget *parent, const int &numberOfRowsShown) :
     selectedLabel(numberOfRowsShown / 2)
 {
     presentationSetup();
+    createNumberList(5, 1);
 }
 
 ListPicker::ListPicker(const int &numberOfListElements, QWidget *parent, const int &numberOfRowsShown) :
@@ -30,6 +31,21 @@ ListPicker::ListPicker(std::initializer_list<QString> _list, QWidget *parent, co
 {
     presentationSetup();
     list = QVector<QString>(_list);
+}
+
+void ListPicker::createNumberList(const int &numberOfListElements, int startValue)
+{
+    if (list.size() != numberOfListElements)
+    {
+        list.resize(numberOfListElements);
+        qDebug() << "list resized";
+    }
+    for (auto i = 0; i < numberOfListElements; i++)
+    {
+        list[i] = QString::number(startValue++);
+        qDebug() << list.at(i);
+    }
+    qDebug() << list.at(0);
 }
 
 ListPicker::~ListPicker()
