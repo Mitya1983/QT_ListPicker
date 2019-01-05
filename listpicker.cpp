@@ -5,11 +5,16 @@
 
 ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
     QWidget(parent),
-    layout(new QVBoxLayout(this)),
+    _layout(new QVBoxLayout(this)),
     labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = 1 : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
     selectedLabel(numberOfRowsShown / 2)
 {
+    layout()->setContentsMargins(0, 0, 0, 0);
     circleItems = true;
+    if (parent == nullptr)
+        setFixedHeight(500);
+    else
+        setFixedHeight(parent->height());
     presentationSetup();
     _selectedIndex = 0;
     connect(this, &ListPicker::onSelectedValueChanged, this, &ListPicker::setShownValues);
@@ -68,6 +73,10 @@ void ListPicker::createList(QList<QString> &&_list)
 void ListPicker::setSelectedItem(int item)
 {
     _selectedIndex = item - 1;
+    int listLastIndex = list.size() - 1;
+    _selectedIndex > listLastIndex ? _selectedIndex = listLastIndex : _selectedIndex;
+    _selectedIndex > maxShownIndex ? _selectedIndex = maxShownIndex : _selectedIndex;
+    _selectedIndex < 0 ? _selectedIndex = 0 : _selectedIndex;
     emit onSelectedValueChanged(_selectedIndex);
 }
 
@@ -81,30 +90,42 @@ int ListPicker::selectedIndex()
     return _selectedIndex;
 }
 
+void ListPicker::setCircling(bool val)
+{
+    circleItems = val;
+}
+
+bool ListPicker::isCircled()
+{
+    return circleItems;
+}
+
+void ListPicker::setMaxShownItems(const int &_value)
+{
+    maxShownIndex = _value - 1;
+    emit onMaxShownItemsChanged(_selectedIndex);
+}
 
 void ListPicker::presentationSetup()
 {
-    layout->setSpacing(0);
-    int fontDecrement = 4;
-    setContentsMargins(0, 0, 0, 0);
+    _layout->setSpacing(2);
+    _layout->setContentsMargins(6, 6, 6, 6);
+    int fontDecrement = 2;
     for (int i = 0, k = labels.size(); i < k; i ++)
     {
         labels[i] = new QLabel(this);
         labels[i]->setAlignment(Qt::AlignCenter);
+        labels[i]->setFixedHeight(height() / k);
         QFont font = labels[i]->font();
         font.setBold(true);
         i == selectedLabel ? labels[i]->setEnabled(true) : labels[i]->setEnabled(false);
-        i <= selectedLabel ? font.setPointSize(labels[i]->height() - (fontDecrement + (fontDecrement * (selectedLabel - i)))) :
-                             font.setPointSize(labels[i]->height() - (fontDecrement + (fontDecrement * (i - selectedLabel))));
+        i <= selectedLabel ? font.setPointSize(labels[i]->height() / (fontDecrement + selectedLabel - i/*(fontDecrement * (selectedLabel - i))*/)) :
+                             font.setPointSize(labels[i]->height() / (fontDecrement + i - selectedLabel/*(fontDecrement * (i - selectedLabel))*/));
         labels[i]->setFont(font);
-        layout->addWidget(labels[i]);
+        qDebug() << font.pointSize();
+        _layout->addWidget(labels[i]);
     }
-    this->setLayout(layout);
-}
-
-void ListPicker::setCircling(bool val)
-{
-    circleItems = val;
+    this->setLayout(_layout);
 }
 
 int ListPicker::previousIndex(int _currentIndex)
@@ -199,9 +220,6 @@ void ListPicker::mouseMoveEvent(QMouseEvent *event)
 void ListPicker::setShownValues(int _currentValueIndex)
 {
     int listLastIndex = list.size() - 1;
-    _currentValueIndex > listLastIndex ? _currentValueIndex = listLastIndex : _currentValueIndex;
-    _currentValueIndex > maxShownIndex ? _currentValueIndex = maxShownIndex : _currentValueIndex;
-    _currentValueIndex < 0 ? _currentValueIndex = 0 : _currentValueIndex;
     if (circleItems)
     {
         labels[selectedLabel]->setText(list[_currentValueIndex]);
@@ -248,13 +266,6 @@ void ListPicker::setShownValues(int _currentValueIndex)
         }
     }
 }
-
-void ListPicker::setMaxShownItems(const int &_value)
-{
-    maxShownIndex = _value - 1;
-    emit onMaxShownItemsChanged(_selectedIndex);
-}
-
 
 ListPicker::~ListPicker()
 {

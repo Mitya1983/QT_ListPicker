@@ -7,61 +7,78 @@
 #include <QList>
 #include <QFont>
 #include <QVBoxLayout>
-
+//TODO: Implement calculation of number of rows depending on widget height
+//      Setup mouse move to be related to widget size and not to maxShownIndex
 
 class ListPicker : public QWidget
 {
     Q_OBJECT
+private: /*Members*/
 
-public: 
-    //Number of shown items in the widget one selected item
-    //5 is by default. Passed number should be odd, otherwise passed value will be decremented to nearest odd one
-    ListPicker(int numberOfRowsShown = 5,
+    //Main layout for placing labels
+    QVBoxLayout *_layout;
+    //Labels to show rows
+    QVector<QLabel*> labels;
+    //Central label
+    int selectedLabel;
+    //Indicates whether list shoud be shown circle like
+    bool circleItems;
+    //Items storage
+    QVector<QString> list;
+    //Maximum number of elements in list
+    int maxShownIndex;
+    //Currently selected index
+    int _selectedIndex;
+
+    //Scroll members:
+    //Is used for scroll accumulation
+    int upCount = 0, downCount = 0;
+    //Is used to store initital mouse cursor x position
+    int currentCursorXPos = 0;
+
+public: /*Methods*/
+
+    //Passed number should be odd, otherwise passed value will be decremented to nearest odd one
+    //If aero is passed the number of shown rows will be calculated on base of widget width (not yet implemented - one is instead)
+    ListPicker(int numberOfRowsShown = 1,
                QWidget *parent = nullptr);
 
-    void createList(const int &numberOfListElements, int startValue); //Creating list starting from startValue
-    void createList(std::initializer_list<QString> _list); //Creating list using initializer list
+    //Creating list of numbers starting from startValue
+    void createList(const int &numberOfListElements, int startValue);
+    //Creating list using initializer list
+    void createList(std::initializer_list<QString> _list);
     //Creating list from existing vector
     void createList(QVector<QString> &_vector);
     void createList(QVector<QString> &&_vector);
     //Creating list from existing list
     void createList(QList<QString> &_list);
     void createList(QList<QString> &&_list);
-
+    //Setting selected item
     void setSelectedItem(int item);
-    QString selectedValue(); //Getting value of the selected item
-    int selectedIndex(); //Getting index of the selected item
-    void setCircling(bool val); //Setting circling
+    //Getting value of the selected item
+    QString selectedValue();
+    //Getting index of the selected item
+    int selectedIndex();
+    //Setting circling (true by default)
+    void setCircling(bool val);
+    bool isCircled(); //Checking if circled
 
 public slots:
 
-    //Setting maximum of shown items
+    //Setting maximum of shown items (Useful if number of shown items should be limited depending on some circumstances)
+    //For example: days should be decreased/increased depending on month selected
     void setMaxShownItems(const int &_value);
 
-private:
-    QVBoxLayout *layout;
-    QVector<QLabel*> labels; //Labels to show rows
-    int selectedLabel;
+private: /*Methods*/
+
+    //Seting up the layout
     void presentationSetup();
-
-    //Should list be circled
-    bool circleItems;
-    bool isCircled(); //Checking if circled
-
-    //Items storage
-    QVector<QString> list; //Stores items
-    //Maximum number of elements in list
-    int maxShownIndex;
-    //Currently selected item
-    int _selectedIndex;
 
     //Functions used to set previous and next items
     int previousIndex(int _curentIndex);
     int nextIndex(int _curentIndex);
 
     //Scroling
-    int upCount = 0, downCount = 0; //Is used for scroll accumulation
-    int currentCursorXPos = 0; //Is used to store initital mouse cursor x position
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -73,13 +90,13 @@ private slots:
 
 signals:
 
-//    Used to invoke createDays each time when maxDay is changed (changing 28, 29, 30 and 31 days count)
+    //Is emited if setMaxShownItems was invoked
     void onMaxShownItemsChanged(int maxShownIndex);
 
-//    Used to invoke setShownValues
+    //Is emited if _selectedItem had changed either by setSelectedItem function or Scroll event
     void onSelectedValueChanged(int newSelectedValueIndex);
 
-public:
+public: /*Destructor*/
     ~ListPicker() override;
 };
 
