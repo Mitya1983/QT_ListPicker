@@ -7,7 +7,8 @@
 #include <QList>
 #include <QFont>
 #include <QVBoxLayout>
-//TODO: Implement calculation of number of rows depending on widget height
+//TODO: Implement overlap view mode
+//      Implement calculation of number of rows depending on widget height
 //      Setup mouse move to be related to widget size and not to maxShownIndex
 
 class ListPicker : public QWidget
@@ -23,6 +24,8 @@ private: /*Members*/
     int selectedLabel;
     //Indicates whether list shoud be shown circle like
     bool circleItems;
+    //Indicates whether labels shoud be plavced with overlap or not (Selected label in front of other ones)
+    bool overlapLabels;
     //Items storage
     QVector<QString> list;
     //Maximum number of elements in list
@@ -62,6 +65,8 @@ public: /*Methods*/
     //Setting circling (true by default)
     void setCircling(bool val);
     bool isCircled(); //Checking if circled
+    //Setting overlaping (false on default)
+    void setOverlap(bool val);
 
 public slots:
 

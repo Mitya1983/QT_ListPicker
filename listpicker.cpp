@@ -11,6 +11,7 @@ ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
 {
     layout()->setContentsMargins(0, 0, 0, 0);
     circleItems = true;
+    overlapLabels = false;
     if (parent == nullptr)
         setFixedHeight(500);
     else
@@ -100,6 +101,11 @@ bool ListPicker::isCircled()
     return circleItems;
 }
 
+void ListPicker::setOverlap(bool val)
+{
+    overlapLabels = val;
+}
+
 void ListPicker::setMaxShownItems(const int &_value)
 {
     maxShownIndex = _value - 1;
@@ -108,24 +114,61 @@ void ListPicker::setMaxShownItems(const int &_value)
 
 void ListPicker::presentationSetup()
 {
-    _layout->setSpacing(2);
-    _layout->setContentsMargins(6, 6, 6, 6);
-    int fontDecrement = 2;
-    for (int i = 0, k = labels.size(); i < k; i ++)
+    if (!overlapLabels)
     {
-        labels[i] = new QLabel(this);
-        labels[i]->setAlignment(Qt::AlignCenter);
-        labels[i]->setFixedHeight(height() / k);
-        QFont font = labels[i]->font();
-        font.setBold(true);
-        i == selectedLabel ? labels[i]->setEnabled(true) : labels[i]->setEnabled(false);
-        i <= selectedLabel ? font.setPointSize(labels[i]->height() / (fontDecrement + selectedLabel - i/*(fontDecrement * (selectedLabel - i))*/)) :
-                             font.setPointSize(labels[i]->height() / (fontDecrement + i - selectedLabel/*(fontDecrement * (i - selectedLabel))*/));
-        labels[i]->setFont(font);
-        qDebug() << font.pointSize();
-        _layout->addWidget(labels[i]);
+        _layout->setSpacing(6);
+        _layout->setContentsMargins(6, 6, 6, 6);
+        double sizePercent = 0.40;
+        if (labels.size() > 3)
+            sizePercent -= ((labels.size() - 3) / 2) * 0.05;
+        else if (labels.size() == 1)
+            sizePercent = 0.90;
+        double fontDecrement = 1.3;
+        int sizeDecrement = _layout->spacing() * (labels.size() - 1) + _layout->contentsMargins().top() + _layout->contentsMargins().bottom();
+        for (int i = 0, k = labels.size(); i < k; i++)
+        {
+            labels[i] = new QLabel(this);
+            _layout->addWidget(labels[i]);
+        }
+
+        labels[selectedLabel]->setFixedHeight(static_cast<int>(static_cast<double>(height() - sizeDecrement) * sizePercent));
+        labels[selectedLabel]->raise();
+
+        for (int i = selectedLabel - 1; i >= 0; i--)
+        {
+            labels[i]->setFixedHeight(static_cast<int>(static_cast<double>(labels[i + 1]->height()) * 0.60));
+        }
+        for (int i = selectedLabel + 1, k = labels.size(); i < k; i++)
+        {
+            labels[i]->setFixedHeight(static_cast<int>(static_cast<double>(labels[i - 1]->height()) * 0.60));
+        }
+
+        for (int i = 0, k = labels.size(); i < k; i++)
+        {
+            labels[i]->setAlignment(Qt::AlignCenter);
+            QFont font = labels[i]->font();
+            font.setPointSize(static_cast<int>(static_cast<double>(labels[i]->height()) / fontDecrement));
+            font.setBold(true);
+            i == selectedLabel ? labels[i]->setEnabled(true) : labels[i]->setEnabled(false);
+            labels[i]->setFont(font);
+        }
+
+
+        //    for (int i = 0, k = labels.size(); i < k; i ++)
+        //    {
+        //        labels[i] = new QLabel(this);
+        //        labels[i]->setAlignment(Qt::AlignCenter);
+        //        labels[i]->setFixedHeight(height() / k);
+        //        QFont font = labels[i]->font();
+        //        font.setBold(true);
+        //        i == selectedLabel ? labels[i]->setEnabled(true) : labels[i]->setEnabled(false);
+        //        i <= selectedLabel ? font.setPointSize(labels[i]->height() / (fontDecrement + selectedLabel - i/*(fontDecrement * (selectedLabel - i))*/)) :
+        //                             font.setPointSize(labels[i]->height() / (fontDecrement + i - selectedLabel/*(fontDecrement * (i - selectedLabel))*/));
+        //        labels[i]->setFont(font);
+        //        _layout->addWidget(labels[i]);
+        //    }
+        this->setLayout(_layout);
     }
-    this->setLayout(_layout);
 }
 
 int ListPicker::previousIndex(int _currentIndex)
