@@ -9,7 +9,6 @@ ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
     labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = 1 : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
     selectedLabel(numberOfRowsShown / 2)
 {
-    layout()->setContentsMargins(0, 0, 0, 0);
     circleItems = true;
     if (parent == nullptr)
         setFixedHeight(500);
@@ -230,7 +229,7 @@ void ListPicker::mouseMoveEvent(QMouseEvent *event)
         if (event->pos().y() < currentCursorXPos)
         {
             upCount += 2;
-            if  (upCount >= height() / maxShownIndex)
+            if  (upCount >= height() / 30)
             {
                 currentCursorXPos = event->pos().y();
                 if (_selectedIndex <= maxShownIndex)
@@ -244,7 +243,7 @@ void ListPicker::mouseMoveEvent(QMouseEvent *event)
         if (event->pos().y() > currentCursorXPos)
         {
             downCount += 2;
-            if (downCount >= height() / maxShownIndex)
+            if (downCount >= height() / 30)
             {
                 currentCursorXPos = event->pos().y();
                 if (_selectedIndex >= 0)

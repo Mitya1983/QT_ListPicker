@@ -7,9 +7,8 @@
 #include <QList>
 #include <QFont>
 #include <QVBoxLayout>
-//TODO: Implement overlap view mode
+//TODO:
 //      Implement calculation of number of rows depending on widget height
-//      Setup mouse move to be related to widget size and not to maxShownIndex
 
 class ListPicker : public QWidget
 {
