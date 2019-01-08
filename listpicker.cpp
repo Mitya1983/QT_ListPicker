@@ -22,21 +22,23 @@ ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
 
 int ListPicker::numberOfLabels()
 {
-    int _height = height();
-    if (_height <= 50)
-        return 1;
-    else if (_height <= 150)
-        return 3;
-    else if (_height <= 250)
-        return 5;
-    else if (_height <= 350)
-        return 7;
-    else if (_height <= 450)
-        return 9;
-    else if (_height <= 550)
-        return 11;
-    else
-        return 13;
+//    int _height = height();
+//    if (_height <= 50)
+//        return 1;
+//    else if (_height <= 150)
+//        return 3;
+//    else if (_height <= 250)
+//        return 5;
+//    else if (_height <= 400)
+//        return 7;
+//    else if (_height <= 500)
+//        return 9;
+//    else if (_height <= 600)
+//        return 11;
+//    else
+//        return 13;
+    int data = height() / 60;
+    return data % 2 == 0 ? --data : data;
 
 }
 
