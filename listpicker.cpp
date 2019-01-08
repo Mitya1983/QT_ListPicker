@@ -6,18 +6,38 @@
 ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
     QWidget(parent),
     _layout(new QVBoxLayout(this)),
-    labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = 1 : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
+    labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = numberOfLabels() : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
     selectedLabel(numberOfRowsShown / 2)
 {
     circleItems = true;
-    if (parent == nullptr)
-        setFixedHeight(500);
-    else
-        setFixedHeight(parent->height());
+//    setFixedHeight(550);
+//    _layout = new QVBoxLayout(this);
+//    labels = QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = numberOfLabels() : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown));
+//    selectedLabel = labels.size() / 2;
     presentationSetup();
     _selectedIndex = 0;
     connect(this, &ListPicker::onSelectedValueChanged, this, &ListPicker::setShownValues);
     connect(this, &ListPicker::onMaxShownItemsChanged, this, &ListPicker::setShownValues);
+}
+
+int ListPicker::numberOfLabels()
+{
+    int _height = height();
+    if (_height <= 50)
+        return 1;
+    else if (_height <= 150)
+        return 3;
+    else if (_height <= 250)
+        return 5;
+    else if (_height <= 350)
+        return 7;
+    else if (_height <= 450)
+        return 9;
+    else if (_height <= 550)
+        return 11;
+    else
+        return 13;
+
 }
 
 void ListPicker::createList(const int &numberOfListElements, int startValue)
