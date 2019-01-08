@@ -24,8 +24,6 @@ private: /*Members*/
     int selectedLabel;
     //Indicates whether list shoud be shown circle like
     bool circleItems;
-    //Indicates whether labels shoud be plavced with overlap or not (Selected label in front of other ones)
-    bool overlapLabels;
     //Items storage
     QVector<QString> list;
     //Maximum number of elements in list
@@ -65,8 +63,6 @@ public: /*Methods*/
     //Setting circling (true by default)
     void setCircling(bool val);
     bool isCircled(); //Checking if circled
-    //Setting overlaping (false on default)
-    void setOverlap(bool val);
 
 public slots:
 
@@ -78,6 +74,8 @@ private: /*Methods*/
 
     //Seting up the layout
     void presentationSetup();
+    //Sizing the labels according to widget size
+    void labelsSizing();
 
     //Functions used to set previous and next items
     int previousIndex(int _curentIndex);
@@ -87,6 +85,9 @@ private: /*Methods*/
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+
+    //Resizing labels
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
 
