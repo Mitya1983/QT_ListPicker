@@ -35,12 +35,14 @@ private: /*Members*/
     int currentCursorXPos = 0;
 
 public: /*Methods*/
-
+    //Parent widget should be specified in constructor. Nullptr is not possible. Because list presentation is based on parent widget height.
     //Passed number should be odd, otherwise passed value will be decremented to nearest odd one
     //If zero is passed the number of shown rows will be calculated on base of widget height
     ListPicker(QWidget *parent, int numberOfRowsShown = 0);
     //Calculating number of rows
     int numberOfLabels(int parentHeight);
+
+    //List creation. One of the createList function should be invoked before adding or showing widget.
     //Creating list of numbers starting from startValue
     void createList(const int &numberOfListElements, int startValue);
     //Creating list using initializer list

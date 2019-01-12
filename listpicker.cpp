@@ -266,7 +266,7 @@ void ListPicker::mouseMoveEvent(QMouseEvent *event)
 
 void ListPicker::resizeEvent(QResizeEvent *event)
 {
-    labelsSizing();
+    labelsSizing(height());
     event->accept();
 }
 
