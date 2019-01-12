@@ -10,7 +10,7 @@ ListPicker::ListPicker(QWidget *parent, int numberOfRowsShown) :
     selectedLabel(numberOfRowsShown / 2)
 {
     circleItems = true;
-    presentationSetup();
+    presentationSetup(parent->height());
     _selectedIndex = 0;
     connect(this, &ListPicker::onSelectedValueChanged, this, &ListPicker::setShownValues);
     connect(this, &ListPicker::onMaxShownItemsChanged, this, &ListPicker::setShownValues);
@@ -19,7 +19,6 @@ ListPicker::ListPicker(QWidget *parent, int numberOfRowsShown) :
 int ListPicker::numberOfLabels(int parentHeight)
 {
 
-    qDebug() << parentHeight;
     int _numberOfLabels = parentHeight / 60;
     return _numberOfLabels % 2 == 0 ? --_numberOfLabels : _numberOfLabels;
 
@@ -110,7 +109,7 @@ void ListPicker::setMaxShownItems(const int &_value)
     emit onMaxShownItemsChanged(_selectedIndex);
 }
 
-void ListPicker::presentationSetup()
+void ListPicker::presentationSetup(int parentHeight)
 {
     for (int i = 0, k = labels.size(); i < k; i++)
     {
@@ -124,12 +123,12 @@ void ListPicker::presentationSetup()
     {
         _layout->addWidget(labels[i]);
     }
-    labelsSizing();
+    labelsSizing(parentHeight);
     this->setLayout(_layout);
 
 }
 
-void ListPicker::labelsSizing()
+void ListPicker::labelsSizing(int parentHeight)
 {
     int labelsSize = labels.size();
     double sizePercent = 0.40;
@@ -138,7 +137,7 @@ void ListPicker::labelsSizing()
     if (labelsSize == 1)
     {
         sizePercent = 0.90;
-        labels[selectedLabel]->setFixedHeight(static_cast<int>(static_cast<double>(height() - sizeDecrement) * sizePercent));
+        labels[selectedLabel]->setFixedHeight(static_cast<int>(static_cast<double>(parentHeight - sizeDecrement) * sizePercent));
         labels[selectedLabel]->setAlignment(Qt::AlignCenter);
         QFont font = labels[selectedLabel]->font();
         font.setPointSize(static_cast<int>(static_cast<double>(labels[selectedLabel]->height()) / fontDecrement));
@@ -148,8 +147,7 @@ void ListPicker::labelsSizing()
     else
     {
         sizePercent -= ((labels.size() - 3) / 2) * 0.05;
-
-        labels[selectedLabel]->setFixedHeight(static_cast<int>(static_cast<double>(height() - sizeDecrement) * sizePercent));
+        labels[selectedLabel]->setFixedHeight(static_cast<int>(static_cast<double>(parentHeight - sizeDecrement) * sizePercent));
 
         for (int i = selectedLabel - 1; i >= 0; i--)
         {

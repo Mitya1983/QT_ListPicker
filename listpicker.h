@@ -70,9 +70,9 @@ public slots:
 private: /*Methods*/
 
     //Seting up the layout
-    void presentationSetup();
+    void presentationSetup(int parentHeight);
     //Sizing the labels according to widget size
-    void labelsSizing();
+    void labelsSizing(int parentHeight);
 
     //Functions used to set previous and next items
     int previousIndex(int _curentIndex);
