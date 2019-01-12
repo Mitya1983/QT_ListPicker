@@ -1,5 +1,5 @@
 #ifndef LISTPICKER_H
-#define c_H
+#define LISTPICKER_H
 
 #include <QWidget>
 #include <QLabel>
@@ -38,10 +38,9 @@ public: /*Methods*/
 
     //Passed number should be odd, otherwise passed value will be decremented to nearest odd one
     //If zero is passed the number of shown rows will be calculated on base of widget height
-    ListPicker(int numberOfRowsShown = 0,
-               QWidget *parent = nullptr);
+    ListPicker(QWidget *parent, int numberOfRowsShown = 0);
     //Calculating number of rows
-    int numberOfLabels();
+    int numberOfLabels(int parentHeight);
     //Creating list of numbers starting from startValue
     void createList(const int &numberOfListElements, int startValue);
     //Creating list using initializer list
@@ -104,4 +103,4 @@ public: /*Destructor*/
     ~ListPicker() override;
 };
 
-#endif // WIDGET_H
+#endif // LISTPICKER_H

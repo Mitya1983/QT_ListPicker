@@ -3,42 +3,25 @@
 #include <QLayout>
 
 
-ListPicker::ListPicker(int numberOfRowsShown, QWidget *parent) :
+ListPicker::ListPicker(QWidget *parent, int numberOfRowsShown) :
     QWidget(parent),
     _layout(new QVBoxLayout(this)),
-    labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = numberOfLabels() : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
+    labels(QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = numberOfLabels(parent->height()) : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown))),
     selectedLabel(numberOfRowsShown / 2)
 {
     circleItems = true;
-//    setFixedHeight(550);
-//    _layout = new QVBoxLayout(this);
-//    labels = QVector<QLabel*>(numberOfRowsShown <= 0 ? numberOfRowsShown = numberOfLabels() : (numberOfRowsShown % 2 == 0 ? --numberOfRowsShown : numberOfRowsShown));
-//    selectedLabel = labels.size() / 2;
     presentationSetup();
     _selectedIndex = 0;
     connect(this, &ListPicker::onSelectedValueChanged, this, &ListPicker::setShownValues);
     connect(this, &ListPicker::onMaxShownItemsChanged, this, &ListPicker::setShownValues);
 }
 
-int ListPicker::numberOfLabels()
+int ListPicker::numberOfLabels(int parentHeight)
 {
-//    int _height = height();
-//    if (_height <= 50)
-//        return 1;
-//    else if (_height <= 150)
-//        return 3;
-//    else if (_height <= 250)
-//        return 5;
-//    else if (_height <= 400)
-//        return 7;
-//    else if (_height <= 500)
-//        return 9;
-//    else if (_height <= 600)
-//        return 11;
-//    else
-//        return 13;
-    int data = height() / 60;
-    return data % 2 == 0 ? --data : data;
+
+    qDebug() << parentHeight;
+    int _numberOfLabels = parentHeight / 60;
+    return _numberOfLabels % 2 == 0 ? --_numberOfLabels : _numberOfLabels;
 
 }
 
@@ -217,8 +200,10 @@ void ListPicker::wheelEvent(QWheelEvent *event)
         {
             if (_selectedIndex >= 0)
                 _selectedIndex--;
-            if (_selectedIndex < 0)
+            if (_selectedIndex < 0 && circleItems)
                 _selectedIndex = maxShownIndex;
+            else if (_selectedIndex < 0 && !circleItems)
+                _selectedIndex = 0;
             upCount = 0;
             emit onSelectedValueChanged(_selectedIndex);
         }
@@ -230,8 +215,10 @@ void ListPicker::wheelEvent(QWheelEvent *event)
         {
             if (_selectedIndex <= maxShownIndex)
                 _selectedIndex++;
-            if (_selectedIndex > maxShownIndex)
+            if (_selectedIndex > maxShownIndex && circleItems)
                 _selectedIndex = 0;
+            else if (_selectedIndex > maxShownIndex && !circleItems)
+                _selectedIndex = maxShownIndex;
             downCount = 0;
             emit onSelectedValueChanged(_selectedIndex);
         }
